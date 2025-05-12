@@ -915,9 +915,9 @@ public class ModelUtils {
                     return isFreeFormExplicit;
                 }
 
-                // additionalProperties not defined
+                // additionalProperties was explicitly set to 'false'
                 if (addlProps == null) {
-                    return true;
+                    return false;
                 } else {
                     addlProps = getReferencedSchema(openAPI, addlProps);
 

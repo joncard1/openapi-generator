@@ -22,6 +22,7 @@ import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import org.openapitools.codegen.config.GlobalSettings;
 import org.openapitools.codegen.TestUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -252,6 +253,17 @@ public class ModelUtilsTest {
         OpenAPI openAPI = new OpenAPI().openapi("3.0.0");
         // Create initial "empty" object schema.
         ObjectSchema objSchema = new ObjectSchema();
+        GlobalSettings.setProperty("x-disallow-additional-properties-if-not-present", "true");
+        Assert.assertFalse(ModelUtils.isFreeFormObject(objSchema, openAPI));
+
+        GlobalSettings.setProperty("x-disallow-additional-properties-if-not-present", "false");
+        Assert.assertTrue(ModelUtils.isFreeFormObject(objSchema, openAPI));
+
+        GlobalSettings.clearProperty("x-disallow-additional-properties-if-not-present");
+        objSchema.setAdditionalProperties(Boolean.FALSE);
+        Assert.assertFalse(ModelUtils.isFreeFormObject(objSchema, openAPI));
+
+        objSchema.setAdditionalProperties(Boolean.TRUE);
         Assert.assertTrue(ModelUtils.isFreeFormObject(objSchema, openAPI));
 
         // Set additionalProperties to an empty ObjectSchema.
